@@ -20,8 +20,16 @@ class AccountsController < ApplicationController
     if @account.save
       render json: @account, status: :created, location: @account
     else
-      render json: @account.errors, status: :unprocessable_entity
+      render json: errors(@account.errors), status: :unprocessable_entity
     end
+  end
+
+  def errors(validationErrors)
+    errors = []
+    validationErrors.each do |key, keyErrors|
+      errors << "#{key} #{keyErrors}"
+    end
+    {errors: errors}
   end
 
   # PATCH/PUT /accounts/1
@@ -29,7 +37,7 @@ class AccountsController < ApplicationController
     if @account.update(account_params)
       render json: @account
     else
-      render json: @account.errors, status: :unprocessable_entity
+      render json: errors(@account.errors), status: :unprocessable_entity
     end
   end
 
